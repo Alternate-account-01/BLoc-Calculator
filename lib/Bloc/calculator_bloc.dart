@@ -3,19 +3,29 @@ import '../Events/Calculator_event.dart';
 import '../State/calculator_state.dart';
 
 class CalculatorBloc extends Bloc<CalculatorEvent, CalculatorState> {
-  CalculatorBloc() : super(CalculatorState()) {
-    on<Plus>((event, emit) => emit(CalculatorState(result: event.a + event.b)));
-    on<Minus>(
-      (event, emit) => emit(CalculatorState(result: event.a - event.b)),
-    );
-    on<Multiply>(
-      (event, emit) => emit(CalculatorState(result: event.a * event.b)),
-    );
-    on<Division>((event, emit) {
-      final divisor = event.b == 0.0 ? 0.0 : event.b;
-      final result = divisor == 0.0 ? 0.0 : (event.a / divisor);
-      emit(CalculatorState(result: result));
+  CalculatorBloc() : super(Theothercalculator()) {
+    on<Plus>((e, emit) {
+      emit(CalculatorSuccess(e.a + e.b));
     });
-    on<Reset>((event, emit) => emit(CalculatorState(result: 0.0)));
+
+    on<Minus>((e, emit) {
+      emit(CalculatorSuccess(e.a - e.b));
+    });
+
+    on<Multiply>((e, emit) {
+      emit(CalculatorSuccess(e.a * e.b));
+    });
+
+    on<Division>((e, emit) {
+      if (e.b == 0) {
+        emit(CalculatorError("You Can't divide by zero dawgg"));
+      } else {
+        emit(CalculatorSuccess(e.a / e.b));
+      }
+    });
+
+    on<Reset>((e, emit) {
+      emit(Theothercalculator());
+    });
   }
 }
